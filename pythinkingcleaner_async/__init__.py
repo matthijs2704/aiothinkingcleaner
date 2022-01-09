@@ -8,6 +8,8 @@ if sys.version_info >= (3, 8):
 else:
     import importlib_metadata
 
+from .thinkingcleaner import ThinkingCleaner
+
 
 def get_version() -> str:
     try:
