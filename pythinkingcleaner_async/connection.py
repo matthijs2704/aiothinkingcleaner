@@ -1,5 +1,7 @@
 """Class representing the connection to the Thinking Cleaner module."""
 
+from typing import Any, Dict
+
 import asyncio
 from functools import partial
 
@@ -12,10 +14,12 @@ from pythinkingcleaner_async.exceptions import TCCommandFailed, TCErrorResponse
 class ThinkingCleanerConnection:
     """Class representing a raw connection to Thinking Cleaner."""
 
-    session = None
+    session: aiohttp.ClientSession
     """HTTP session used for API"""
 
-    def __init__(self, target, timeout=60, verbose=False) -> None:
+    def __init__(
+        self, target: str, timeout: int = 60, verbose: bool = False
+    ) -> None:
         """Create a new instance."""
         self.target = target
 
@@ -29,7 +33,7 @@ class ThinkingCleanerConnection:
         )
         pass
 
-    async def _get_status(self) -> dict:
+    async def _get_status(self) -> Dict[str, Any]:
         """Retreive the current status of the vacuum.
 
         Returns:
