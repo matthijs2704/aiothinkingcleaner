@@ -38,6 +38,9 @@ class ThinkingCleanerConnection:
 
         Returns:
             dict: raw status response
+
+        Raises:
+            TCErrorResponse: when an error response is received from the device
         """
         async with self.session.get("/status.json") as resp:
             status_data = await resp.json(content_type=None)
@@ -55,6 +58,9 @@ class ThinkingCleanerConnection:
 
         Args:
             command (TCCommand): Command to send.
+
+        Raises:
+            TCCommandFailed: when a command does not exist or failed to execute
         """
         async with self.session.get(
             f"/command.json?command={command.value}"
