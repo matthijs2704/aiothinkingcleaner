@@ -1,4 +1,3 @@
-# type: ignore[attr-defined]
 """Library to communicate with a Thinking Cleaner module asynchronously"""
 
 import sys
@@ -19,3 +18,5 @@ def get_version() -> str:
 
 
 version: str = get_version()
+
+__all__ = ["ThinkingCleaner"]

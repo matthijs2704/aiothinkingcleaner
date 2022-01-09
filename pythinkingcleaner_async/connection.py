@@ -1,13 +1,13 @@
 """Class representing the connection to the Thinking Cleaner module."""
 
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 import asyncio
 from functools import partial
 
 import aiohttp
 
-from pythinkingcleaner_async.data import TCCommand
+from pythinkingcleaner_async.data import TCCommand, TCDeviceStatus
 from pythinkingcleaner_async.exceptions import TCCommandFailed, TCErrorResponse
 
 
@@ -33,7 +33,7 @@ class ThinkingCleanerConnection:
         )
         pass
 
-    async def _get_status(self) -> Dict[str, Any]:
+    async def _get_status(self) -> TCDeviceStatus:
         """Retreive the current status of the vacuum.
 
         Returns:
@@ -46,10 +46,15 @@ class ThinkingCleanerConnection:
             status_data = await resp.json(content_type=None)
 
             if self.verbose:
-                self.verbose(status_data)
+                self.verbose(status_data)  # type: ignore
 
             if status_data["result"] == "success":
-                return status_data["status"]
+
+                # ignore schedule serial number
+                del status_data["status"]["schedule_serial_number"]
+
+                status = TCDeviceStatus(**status_data["status"])
+                return status
 
             raise TCErrorResponse
 

@@ -8,12 +8,7 @@ class ThinkingCleaner(ThinkingCleanerConnection):
     """Class representing a Thinking Cleaner module"""
 
     async def get_status(self) -> TCDeviceStatus:
-        raw_status = await self._get_status()
-
-        # ignore schedule serial number
-        del raw_status["schedule_serial_number"]
-
-        status = TCDeviceStatus(**raw_status)
+        status = await self._get_status()
         return status
 
     async def spot_clean(self) -> None:
