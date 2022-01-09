@@ -37,7 +37,7 @@ class ThinkingCleanerConnection:
         """Retreive the current status of the vacuum.
 
         Returns:
-            dict: raw status response
+            TCDeviceStatus: status of the vacuum
 
         Raises:
             TCErrorResponse: when an error response is received from the device
