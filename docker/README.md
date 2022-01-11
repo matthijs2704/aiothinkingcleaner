@@ -1,4 +1,4 @@
-# Docker for pythinkingcleaner-async
+# Docker for aiothinkingcleaner
 
 ## Installation
 
@@ -15,7 +15,7 @@ make docker-build VERSION=latest
 ```
 
 You may provide name and version for the image.
-Default name is `IMAGE := pythinkingcleaner_async`.
+Default name is `IMAGE := aiothinkingcleaner`.
 Default version is `VERSION := latest`.
 
 ```bash
@@ -27,7 +27,7 @@ make docker-build IMAGE=some_name VERSION=0.1.0
 ```bash
 docker run -it --rm \
    -v $(pwd):/workspace \
-   pythinkingcleaner_async bash
+   aiothinkingcleaner bash
 ```
 
 ## How to clean up

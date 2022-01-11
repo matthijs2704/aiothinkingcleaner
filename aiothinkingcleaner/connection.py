@@ -7,8 +7,8 @@ from functools import partial
 
 import aiohttp
 
-from pythinkingcleaner_async.data import TCCommand, TCDeviceStatus
-from pythinkingcleaner_async.exceptions import TCCommandFailed, TCErrorResponse
+from aiothinkingcleaner.data import TCCommand, TCDeviceStatus
+from aiothinkingcleaner.exceptions import TCCommandFailed, TCErrorResponse
 
 
 class ThinkingCleanerConnection:

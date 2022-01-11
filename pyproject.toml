@@ -4,14 +4,14 @@ requires = ["poetry_core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "pythinkingcleaner-async"
+name = "aiothinkingcleaner"
 version = "0.1.0"
 description = "Library to communicate with a Thinking Cleaner module asynchronously"
 readme = "README.md"
 authors = ["matthijs2704 <matthijs@logemann.dev>"]
 license = "MIT"
-repository = "https://github.com/matthijs2704/pythinkingcleaner-async"
-homepage = "https://github.com/matthijs2704/pythinkingcleaner-async"
+repository = "https://github.com/matthijs2704/aiothinkingcleaner"
+homepage = "https://github.com/matthijs2704/aiothinkingcleaner"
 
 # Keywords description https://python-poetry.org/docs/pyproject/#keywords
 keywords = []  #! Update me
@@ -133,7 +133,7 @@ addopts = [
 source = ["tests"]
 
 [coverage.paths]
-source = "pythinkingcleaner-async"
+source = "aiothinkingcleaner"
 
 [coverage.run]
 branch = true

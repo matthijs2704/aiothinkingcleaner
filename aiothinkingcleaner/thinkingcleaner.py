@@ -1,7 +1,7 @@
 """Class for control of a Thinking Cleaner module"""
 
-from pythinkingcleaner_async.connection import ThinkingCleanerConnection
-from pythinkingcleaner_async.data import TCCommand, TCDeviceStatus
+from aiothinkingcleaner.connection import ThinkingCleanerConnection
+from aiothinkingcleaner.data import TCCommand, TCDeviceStatus
 
 
 class ThinkingCleaner(ThinkingCleanerConnection):
