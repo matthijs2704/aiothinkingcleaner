@@ -9,5 +9,9 @@ class TCErrorResponse(ThinkingCleanerError):
     pass
 
 
+class TCInvalidReturnType(ThinkingCleanerError):
+    pass
+
+
 class TCCommandFailed(ThinkingCleanerError):
     pass

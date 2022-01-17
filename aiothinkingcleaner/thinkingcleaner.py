@@ -14,6 +14,6 @@ class ThinkingCleaner(ThinkingCleanerConnection):
         cls._registered_commands[command.name] = command
         setattr(cls, command.name, command)
 
-    async def get_status(self) -> TCDeviceStatus:
-        status = await self._get_status()
-        return status
+    # async def get_status(self) -> TCDeviceStatus:
+    #     status = await self._get_status()
+    #     return status

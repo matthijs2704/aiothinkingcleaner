@@ -68,6 +68,7 @@ class TCDeviceStatus(TCReturnData):
         capacity: int,
         cleaner_state: str,
         cleaning: str,
+        schedule_serial_number: int,
         near_homebase: str,
     ) -> None:
         self.name = name

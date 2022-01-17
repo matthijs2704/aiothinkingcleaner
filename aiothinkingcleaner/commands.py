@@ -1,5 +1,6 @@
-from aiothinkingcleaner.command_base import TCCommand
-from aiothinkingcleaner.data import TCEndpoint
+from aiothinkingcleaner.data import TCDeviceStatus
+
+from .command_base import TCCommand, TCEndpoint
 
 # class TCCommand(Enum):
 #     """Enum of commands available."""
@@ -64,3 +65,17 @@ class POWER_OFF(TCCommand):
 class REBOOT(TCCommand):
     ENDPOINT = TCEndpoint.COMMAND
     CMD = "crash"
+
+
+class RENAME_DEVICE(TCCommand):
+    ENDPOINT = TCEndpoint.COMMAND
+    CMD = "rename_device"
+
+    DATA = {"name": str}
+
+
+class STATUS(TCCommand):
+    ENDPOINT = TCEndpoint.STATUS
+    CMD = "status"
+
+    RETURNS = TCDeviceStatus

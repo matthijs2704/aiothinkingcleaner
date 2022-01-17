@@ -5,9 +5,11 @@ from aiothinkingcleaner import ThinkingCleaner
 
 async def main(host):
     async with ThinkingCleaner(host, verbose=True) as tc:
-        status = await tc.get_status()
-        print(status)
-        await tc.reboot()
+        status = await tc.status()
+        print(status.__dict__)
+        await tc.dock()
+        # await tc.reboot()
+        # await tc.rename_device(["Dusty"])
         # await tc.send_command(TCCommand.DOCK)
 
 

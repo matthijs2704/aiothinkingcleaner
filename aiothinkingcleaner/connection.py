@@ -7,7 +7,9 @@ from functools import partial
 
 import aiohttp
 
-from .data import TCDeviceStatus, TCEndpoint
+from aiothinkingcleaner.command_base import TCEndpoint
+
+from .data import TCDeviceStatus
 from .exceptions import TCCommandFailed, TCErrorResponse
 
 
@@ -58,9 +60,9 @@ class ThinkingCleanerConnection:
 
             raise TCErrorResponse
 
-    async def send_command(
+    async def send(
         self, endpoint: TCEndpoint, command: str, data: dict
-    ) -> None:
+    ) -> dict:
         """Send a command to the vacuum.
 
         Args:
@@ -69,6 +71,7 @@ class ThinkingCleanerConnection:
         Raises:
             TCCommandFailed: when a command does not exist or failed to execute
         """
+
         data = data if data is not None else {}
         data["command"] = command
 
@@ -79,6 +82,7 @@ class ThinkingCleanerConnection:
 
             if cmd_resp_data["result"] != "success":
                 raise TCCommandFailed
+            return cmd_resp_data
 
     # async def send_command(self, command: TCCommand) -> None:
     #     """Send a command to the vacuum.
