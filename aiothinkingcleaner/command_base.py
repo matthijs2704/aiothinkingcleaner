@@ -22,6 +22,9 @@ class TCEndpoint(Enum):
     FULL_STATUS = "full_status"
 
 
+T = TypeVar("T", bound="TCCommandMeta")
+
+
 class TCCommandMeta(type):
     ENDPOINT: TCEndpoint
     CMD: str
@@ -29,11 +32,11 @@ class TCCommandMeta(type):
     RETURNS: Optional[Type[TCReturnData]]
 
     def __new__(
-        mcs: Type[TCCommandMeta],
+        mcs: Type[T],
         name: str,
         bases: Tuple[type, ...],
         dict: Dict[str, Any],
-    ) -> TCCommandMeta:
+    ) -> T:
         if name.startswith("_") or name == "Command":
             return type.__new__(mcs, name, bases, dict)
 
@@ -56,7 +59,6 @@ class TCCommandMeta(type):
         return cls
 
 
-T = TypeVar("T")
 U = TypeVar("U")
 V = TypeVar("V", bound="TCCommand")
 
