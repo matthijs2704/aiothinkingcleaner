@@ -1,5 +1,9 @@
 """Class for control of a Thinking Cleaner module"""
 
+from typing import Dict, Type
+
+from aiothinkingcleaner.command_base import TCCommand
+
 from .connection import ThinkingCleanerConnection
 from .data import TCDeviceStatus
 
@@ -7,7 +11,7 @@ from .data import TCDeviceStatus
 class ThinkingCleaner(ThinkingCleanerConnection):
     """Class representing a Thinking Cleaner module"""
 
-    _registered_commands = {}
+    _registered_commands: Dict[str, Type[TCCommand]] = {}
 
     @classmethod
     def register_command(cls, command):
