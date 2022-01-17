@@ -2,20 +2,6 @@ from aiothinkingcleaner.data import TCDeviceStatus
 
 from .command_base import TCCommand, TCEndpoint
 
-# class TCCommand(Enum):
-#     """Enum of commands available."""
-
-#     CLEAN = "clean"
-#     MAX = "max"
-#     DELAYED_CLEAN = "delayedclean"
-#     SPOT = "spot"
-#     DOCK = "dock"
-#     FIND_ME = "find_me"
-#     STOP = "stop"
-#     EXIT_DOCK = "leavehomebase"
-#     POWER_OFF = "poweroff"
-#     REBOOT = "crash"
-
 
 class CLEAN(TCCommand):
     ENDPOINT = TCEndpoint.COMMAND
