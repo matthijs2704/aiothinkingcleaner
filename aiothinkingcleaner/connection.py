@@ -7,8 +7,8 @@ from functools import partial
 
 import aiohttp
 
-from aiothinkingcleaner.data import TCCommand, TCDeviceStatus
-from aiothinkingcleaner.exceptions import TCCommandFailed, TCErrorResponse
+from .data import TCDeviceStatus, TCEndpoint
+from .exceptions import TCCommandFailed, TCErrorResponse
 
 
 class ThinkingCleanerConnection:
@@ -58,7 +58,9 @@ class ThinkingCleanerConnection:
 
             raise TCErrorResponse
 
-    async def send_command(self, command: TCCommand) -> None:
+    async def send_command(
+        self, endpoint: TCEndpoint, command: str, data: dict
+    ) -> None:
         """Send a command to the vacuum.
 
         Args:
@@ -67,13 +69,33 @@ class ThinkingCleanerConnection:
         Raises:
             TCCommandFailed: when a command does not exist or failed to execute
         """
+        data = data if data is not None else {}
+        data["command"] = command
+
         async with self.session.get(
-            f"/command.json?command={command.value}"
+            f"/{endpoint.value}.json", params=data
         ) as cmd_resp:
             cmd_resp_data = await cmd_resp.json(content_type=None)
 
             if cmd_resp_data["result"] != "success":
                 raise TCCommandFailed
+
+    # async def send_command(self, command: TCCommand) -> None:
+    #     """Send a command to the vacuum.
+
+    #     Args:
+    #         command (TCCommand): Command to send.
+
+    #     Raises:
+    #         TCCommandFailed: when a command does not exist or failed to execute
+    #     """
+    #     async with self.session.get(
+    #         f"/command.json?command={command.value}"
+    #     ) as cmd_resp:
+    #         cmd_resp_data = await cmd_resp.json(content_type=None)
+
+    #         if cmd_resp_data["result"] != "success":
+    #             raise TCCommandFailed
 
     async def __aenter__(self):
         return self

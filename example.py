@@ -1,14 +1,13 @@
 import asyncio
 
 from aiothinkingcleaner import ThinkingCleaner
-from aiothinkingcleaner.data import TCCommand
 
 
 async def main(host):
     async with ThinkingCleaner(host, verbose=True) as tc:
         status = await tc.get_status()
         print(status)
-        await tc.power_off()
+        await tc.reboot()
         # await tc.send_command(TCCommand.DOCK)
 
 

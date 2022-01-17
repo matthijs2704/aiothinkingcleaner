@@ -1,18 +1,6 @@
 from enum import Enum
 
-
-class TCCommand(Enum):
-    """Enum of commands available."""
-
-    CLEAN = "clean"
-    MAX = "max"
-    DELAYED_CLEAN = "delayedclean"
-    SPOT = "spot"
-    DOCK = "dock"
-    FIND_ME = "find_me"
-    STOP = "stop"
-    EXIT_DOCK = "leavehomebase"
-    POWER_OFF = "poweroff"
+from .command_base import TCReturnData
 
 
 class TCDeviceState(Enum):
@@ -52,7 +40,7 @@ class TCDeviceState(Enum):
     OFFLINE = "offline"
 
 
-class TCDeviceStatus:
+class TCDeviceStatus(TCReturnData):
     """Current status of the Roomba."""
 
     name: str
