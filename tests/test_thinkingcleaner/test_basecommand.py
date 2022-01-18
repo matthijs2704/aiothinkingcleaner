@@ -1,7 +1,7 @@
-from typing import Any, Dict
+from typing import Any, ClassVar, Dict, Optional
 
-import enum
 import unittest
+from enum import Enum
 from unittest import IsolatedAsyncioTestCase
 from unittest.mock import patch
 
@@ -12,6 +12,10 @@ from aiothinkingcleaner.command_base import (
     TCReturnData,
 )
 from aiothinkingcleaner.exceptions import *
+
+
+class DummyEndpointEnum(Enum):
+    TEST_ENDPOINT = "test"
 
 
 class TCConnectionStub:
@@ -39,18 +43,19 @@ class TCConnectionStub:
 
 
 class DummyCommand(metaclass=TCCommandMeta):
-    ENDPOINT = "test"
+    ENDPOINT = DummyEndpointEnum.TEST_ENDPOINT
     CMD = "test_cmd"
     DATA = {"testParam": str}
 
     pass
 
 
+@patch("aiothinkingcleaner.command_base.TCEndpoint", DummyEndpointEnum)
 class BaseCommandTests(unittest.TestCase):
     def test_meta_inherit(self):
         test_obj = DummyCommand()
-        assert (test_obj.name) == "dummycommand"
-        assert (test_obj.ENDPOINT) == "test"
+        assert (test_obj.name) == "dummycommand"  # type: ignore
+        assert (test_obj.ENDPOINT) == DummyEndpointEnum.TEST_ENDPOINT
         assert (test_obj.DATA) == {"testParam": str}
         assert (test_obj.CMD) == "test_cmd"
 
@@ -58,23 +63,23 @@ class BaseCommandTests(unittest.TestCase):
         test_obj = DummyCommand()
         test_obj.DATA = {"testParam2": str}
 
-        assert (test_obj.name) == "dummycommand"
-        assert (test_obj.ENDPOINT) == "test"
+        assert (test_obj.name) == "dummycommand"  # type: ignore
+        assert (test_obj.ENDPOINT) == DummyEndpointEnum.TEST_ENDPOINT
         assert (test_obj.DATA) == {"testParam2": str}
         assert (test_obj.CMD) == "test_cmd"
 
     def test_meta_with_name_override(self):
         test_obj = DummyCommand()
-        test_obj.name = "testcmd"
+        test_obj.name = "testcmd"  # type: ignore
 
-        assert (test_obj.name) == "testcmd"
-        assert (test_obj.ENDPOINT) == "test"
+        assert (test_obj.name) == "testcmd"  # type: ignore
+        assert (test_obj.ENDPOINT) == DummyEndpointEnum.TEST_ENDPOINT
         assert (test_obj.DATA) == {"testParam": str}
         assert (test_obj.CMD) == "test_cmd"
 
 
 class RealDummyCommand(TCCommand):
-    ENDPOINT = "testCmd"
+    ENDPOINT = DummyEndpointEnum.TEST_ENDPOINT  # type: ignore
     CMD = "test"
     DATA = {"testParam": str}
 
@@ -82,13 +87,17 @@ class RealDummyCommand(TCCommand):
 
 
 class SimpleDummyReturn(TCReturnData):
-    endpoint: str
+    endpoint: DummyEndpointEnum
     action: str
     result: str
     data: Dict[str, Any]
 
     def __init__(
-        self, endpoint: str, action: str, result: str, data: Dict[str, Any]
+        self,
+        endpoint: DummyEndpointEnum,
+        action: str,
+        result: str,
+        data: Dict[str, Any],
     ):
         self.endpoint = endpoint
         self.action = action
@@ -97,6 +106,8 @@ class SimpleDummyReturn(TCReturnData):
 
 
 class BaseCommandAsyncTests(unittest.IsolatedAsyncioTestCase):
+    _connection = NotImplemented  # type: ClassVar[TCConnectionStub]
+
     @classmethod
     def setUpClass(self):
         self._connection = TCConnectionStub()
@@ -107,6 +118,7 @@ class BaseCommandAsyncTests(unittest.IsolatedAsyncioTestCase):
         res = await test_obj(connection=self._connection, data=["param"])
         assert res == None
 
+    @patch("aiothinkingcleaner.command_base.TCEndpoint", DummyEndpointEnum)
     async def test_call_with_return(self):
         test_obj = RealDummyCommand()
         test_obj.RETURNS = SimpleDummyReturn
@@ -114,16 +126,9 @@ class BaseCommandAsyncTests(unittest.IsolatedAsyncioTestCase):
         res = await test_obj(connection=self._connection, data=["param"])
 
         assert type(res) == SimpleDummyReturn
-        assert res.endpoint == "testCmd"
+        assert res.endpoint.value == "test"
         assert res.action == "test"
         assert res.data == {"testParam": "param"}
-
-    async def test_call_invalid_returntype(self):
-        test_obj = RealDummyCommand()
-        test_obj.RETURNS = str
-
-        with self.assertRaises(TCInvalidReturnType):
-            await test_obj(connection=self._connection, data=["param"])
 
     async def test_call_invalid_return_data(self):
         test_obj = RealDummyCommand()
@@ -147,14 +152,14 @@ class BaseCommandAsyncTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_command_bind(self):
         test_cmd = RealDummyCommand()
-        test_cmd.name = "dummy"
+        test_cmd.name = "dummy"  # type: ignore
 
-        setattr(type(self._connection), test_cmd.name, test_cmd)
+        setattr(type(self._connection), test_cmd.name, test_cmd)  # type: ignore
 
         # Check bind on instance
-        res = await self._connection.dummy(["param"])
+        res = await self._connection.dummy(["param"])  # type: ignore
         assert res == None
 
         # Check bind on class
-        res = await type(self._connection).dummy(self._connection, ["param"])
+        res = await type(self._connection).dummy(self._connection, ["param"])  # type: ignore
         assert res == None

@@ -81,13 +81,13 @@ class TCCommand(metaclass=TCCommandMeta):
 
     async def __call__(
         self: V, connection: U, data: List[Any]
-    ) -> Optional[Type[TCReturnData]]:
+    ) -> Optional[TCReturnData]:
         dataDict = self.pack_params(data if data is not None else {})
         rtndata = await connection.send(self.ENDPOINT, self.CMD, dataDict)  # type: ignore
         if rtndata and self.RETURNS:
             if issubclass(self.RETURNS, TCReturnData):
                 try:
-                    return self.RETURNS(**rtndata[self.CMD])  # type: ignore
+                    return self.RETURNS(**rtndata[self.CMD])
                 except (KeyError, TypeError) as exc:
                     raise TCInvalidReturnType from exc
             else:
@@ -102,7 +102,10 @@ class TCCommand(metaclass=TCCommandMeta):
 
     @classmethod
     def pack_params(cls, data: List[Any]) -> Dict[str, Any]:
-        rd = {}
+        rd: Dict[str, Any] = {}
+        if cls.DATA is None:
+            return rd
+
         for i, (fieldName, field) in enumerate(cls.DATA.items()):
             if i < len(data) and isinstance(data[i], field):
                 rd[fieldName] = data[i]

@@ -1,4 +1,6 @@
 """Tests for data structures."""
+from typing import Any, Dict
+
 import unittest
 from unittest.mock import patch
 
@@ -12,7 +14,7 @@ def test_stub():
 
 
 def test_devicestatus_init():
-    data = {
+    data: Dict[str, Any] = {
         "name": "name",
         "battery_charge": 12.34,
         "capacity": 1234,

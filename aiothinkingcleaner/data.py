@@ -6,7 +6,7 @@ from .command_base import TCReturnData
 class TCDeviceStateMeta(EnumMeta):
     def __str__(cls):
         lines = [f"Members of `{cls.__name__}` are:"]
-        for member in cls:
+        for member in cls:  # type: str
             lines.append(f"- {member}")
         return "\n".join(lines)
 
