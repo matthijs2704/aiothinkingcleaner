@@ -1,6 +1,5 @@
 from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar
 
-from ast import And, Return
 from enum import Enum
 from functools import partial, partialmethod
 
@@ -37,17 +36,21 @@ class TCCommandMeta(type):
         bases: Tuple[type, ...],
         dict: Dict[str, Any],
     ) -> T:
-        if name.startswith("_") or name == "Command":
-            return type.__new__(mcs, name, bases, dict)
+        if name.startswith("_") or name == "TCCommand":
+            return super().__new__(mcs, name, bases, dict)
 
         if "name" not in dict:
             dict["name"] = name.lower()
 
-        if "DATA" not in dict and issubclass(bases[0], TCCommandMeta):
+        if (
+            "DATA" not in dict
+            and len(bases) > 0
+            and issubclass(bases[0], TCCommand)
+        ):
             # allow naive DATA inheritance
             dict["DATA"] = bases[0].DATA
 
-        cls = type.__new__(mcs, name, bases, dict)
+        cls = super().__new__(mcs, name, bases, dict)
 
         if not cls.DATA:
             cls.__call__ = partialmethod(cls.__call__, data={})  # type: ignore
@@ -71,7 +74,7 @@ class TCCommand(metaclass=TCCommandMeta):
     CMD: str = ""
 
     # List of additional parameters to add
-    DATA: Dict[str, Any] = {}
+    DATA: Optional[Dict[str, Any]] = None
 
     # Str command name
     RETURNS: Optional[Type[TCReturnData]] = None
@@ -85,7 +88,7 @@ class TCCommand(metaclass=TCCommandMeta):
             if issubclass(self.RETURNS, TCReturnData):
                 try:
                     return self.RETURNS(**rtndata[self.CMD])  # type: ignore
-                except TypeError as exc:
+                except (KeyError, TypeError) as exc:
                     raise TCInvalidReturnType from exc
             else:
                 raise TCInvalidReturnType
@@ -101,7 +104,7 @@ class TCCommand(metaclass=TCCommandMeta):
     def pack_params(cls, data: List[Any]) -> Dict[str, Any]:
         rd = {}
         for i, (fieldName, field) in enumerate(cls.DATA.items()):
-            if isinstance(data[i], field):
+            if i < len(data) and isinstance(data[i], field):
                 rd[fieldName] = data[i]
             else:
                 raise ValueError("Missing mandatory data")

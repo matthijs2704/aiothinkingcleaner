@@ -1,9 +1,28 @@
-from enum import Enum
+from enum import Enum, EnumMeta
 
 from .command_base import TCReturnData
 
 
-class TCDeviceState(Enum):
+class TCDeviceStateMeta(EnumMeta):
+    def __str__(cls):
+        lines = [f"Members of `{cls.__name__}` are:"]
+        for member in cls:
+            lines.append(f"- {member}")
+        return "\n".join(lines)
+
+    def _contains(self, member):
+        return member in self._member_map_ or member in set(
+            map(lambda x: x.value, self._member_map_.values())
+        )
+
+    def is_valid(self, member):
+        if self._contains(member):
+            return True
+        else:
+            return False
+
+
+class TCDeviceState(Enum, metaclass=TCDeviceStateMeta):
     """Current device state of the Roomba."""
 
     BASE = "st_base"
