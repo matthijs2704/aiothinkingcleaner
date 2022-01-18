@@ -5,7 +5,7 @@ default_context:
   project_description: "Library to communicate with a Thinking Cleaner module asynchronously"
   organization: "matthijs2704"
   license: "MIT"
-  minimal_python_version: 3.7
+  minimal_python_version: 3.8
   github_name: "matthijs2704"
   email: "matthijs@logemann.dev"
   version: "0.1.0"

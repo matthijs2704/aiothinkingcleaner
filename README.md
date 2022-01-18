@@ -114,7 +114,7 @@ Articles:
 
 ### Development features
 
-- Supports for `Python 3.7` and higher.
+- Supports for `Python 3.8` and higher.
 - [`Poetry`](https://python-poetry.org/) as the dependencies manager. See configuration in [`pyproject.toml`](https://github.com/matthijs2704/aiothinkingcleaner/blob/main/pyproject.toml) and [`setup.cfg`](https://github.com/matthijs2704/aiothinkingcleaner/blob/main/setup.cfg).
 - Automatic codestyle with [`black`](https://github.com/psf/black), [`isort`](https://github.com/timothycrosley/isort) and [`pyupgrade`](https://github.com/asottile/pyupgrade).
 - Ready-to-use [`pre-commit`](https://pre-commit.com/) hooks with code-formatting.
