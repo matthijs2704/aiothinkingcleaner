@@ -1,21 +1,28 @@
-from enum import Enum
+from enum import Enum, EnumMeta
+
+from .command_base import TCReturnData
 
 
-class TCCommand(Enum):
-    """Enum of commands available."""
+class TCDeviceStateMeta(EnumMeta):
+    def __str__(cls):
+        lines = [f"Members of `{cls.__name__}` are:"]
+        for member in cls:  # type: str
+            lines.append(f"- {member}")
+        return "\n".join(lines)
 
-    CLEAN = "clean"
-    MAX = "max"
-    DELAYED_CLEAN = "delayedclean"
-    SPOT = "spot"
-    DOCK = "dock"
-    FIND_ME = "find_me"
-    STOP = "stop"
-    EXIT_DOCK = "leavehomebase"
-    POWER_OFF = "poweroff"
+    def _contains(self, member):
+        return member in self._member_map_ or member in set(
+            map(lambda x: x.value, self._member_map_.values())
+        )
+
+    def is_valid(self, member):
+        if self._contains(member):
+            return True
+        else:
+            return False
 
 
-class TCDeviceState(Enum):
+class TCDeviceState(Enum, metaclass=TCDeviceStateMeta):
     """Current device state of the Roomba."""
 
     BASE = "st_base"
@@ -52,7 +59,7 @@ class TCDeviceState(Enum):
     OFFLINE = "offline"
 
 
-class TCDeviceStatus:
+class TCDeviceStatus(TCReturnData):
     """Current status of the Roomba."""
 
     name: str
@@ -80,6 +87,7 @@ class TCDeviceStatus:
         capacity: int,
         cleaner_state: str,
         cleaning: str,
+        schedule_serial_number: int,
         near_homebase: str,
     ) -> None:
         self.name = name

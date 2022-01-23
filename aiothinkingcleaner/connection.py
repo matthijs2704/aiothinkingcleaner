@@ -7,8 +7,10 @@ from functools import partial
 
 import aiohttp
 
-from aiothinkingcleaner.data import TCCommand, TCDeviceStatus
-from aiothinkingcleaner.exceptions import TCCommandFailed, TCErrorResponse
+from aiothinkingcleaner.command_base import TCEndpoint
+
+from .data import TCDeviceStatus
+from .exceptions import TCCommandFailed, TCErrorResponse
 
 
 class ThinkingCleanerConnection:
@@ -33,47 +35,53 @@ class ThinkingCleanerConnection:
         )
         pass
 
-    async def _get_status(self) -> TCDeviceStatus:
-        """Retreive the current status of the vacuum.
-
-        Returns:
-            TCDeviceStatus: status of the vacuum
-
-        Raises:
-            TCErrorResponse: when an error response is received from the device
-        """
-        async with self.session.get("/status.json") as resp:
-            status_data = await resp.json(content_type=None)
-
-            if self.verbose:
-                self.verbose(status_data)  # type: ignore
-
-            if status_data["result"] == "success":
-
-                # ignore schedule serial number
-                del status_data["status"]["schedule_serial_number"]
-
-                status = TCDeviceStatus(**status_data["status"])
-                return status
-
-            raise TCErrorResponse
-
-    async def send_command(self, command: TCCommand) -> None:
+    async def send(
+        self, endpoint: TCEndpoint, command: str, data: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Send a command to the vacuum.
 
         Args:
-            command (TCCommand): Command to send.
+            endpoint (TCEndpoint): Which endpoint to send the command to.
+            command (str): Command to send.
+            data (dict): Additional parameters for the command.
+
+        Returns:
+            dict: json return data of the command
 
         Raises:
             TCCommandFailed: when a command does not exist or failed to execute
         """
+
+        data = data if data is not None else {}
+        data["command"] = command
+
         async with self.session.get(
-            f"/command.json?command={command.value}"
+            f"/{endpoint.value}.json", params=data
         ) as cmd_resp:
-            cmd_resp_data = await cmd_resp.json(content_type=None)
+            cmd_resp_data: Dict[str, Any] = await cmd_resp.json(
+                content_type=None
+            )
 
             if cmd_resp_data["result"] != "success":
                 raise TCCommandFailed
+            return cmd_resp_data
+
+    # async def send_command(self, command: TCCommand) -> None:
+    #     """Send a command to the vacuum.
+
+    #     Args:
+    #         command (TCCommand): Command to send.
+
+    #     Raises:
+    #         TCCommandFailed: when a command does not exist or failed to execute
+    #     """
+    #     async with self.session.get(
+    #         f"/command.json?command={command.value}"
+    #     ) as cmd_resp:
+    #         cmd_resp_data = await cmd_resp.json(content_type=None)
+
+    #         if cmd_resp_data["result"] != "success":
+    #             raise TCCommandFailed
 
     async def __aenter__(self):
         return self
